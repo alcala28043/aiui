@@ -1,0 +1,116 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "21-workflows-module",
+  "version": "1.0.0",
+  "title": "Workflows Module",
+  "description": "Defines workflows composed of steps, agents, tools, and branching logic.",
+  "status": "draft",
+
+  "dependencies": [
+    "00-core-architecture",
+    "04-shared-types",
+    "18-agents-module",
+    "20-skills-module",
+    "22-tools-module"
+  ],
+
+  "types": {
+    "WorkflowStepType": {
+      "description": "Type of workflow step.",
+      "kind": "enum",
+      "values": ["agent", "tool", "branch", "wait"]
+    },
+    "WorkflowStep": {
+      "description": "A single step in a workflow.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "type": { "type": "WorkflowStepType" },
+        "agentId": { "type": "Uuid", "optional": true },
+        "toolId": { "type": "Uuid", "optional": true },
+        "input": { "type": "any", "optional": true },
+        "next": { "type": "Uuid | null" }
+      }
+    },
+    "WorkflowDefinition": {
+      "description": "Full workflow definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "steps": { "type": "WorkflowStep[]" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "workflows",
+        "path": "/workflows",
+        "title": "Workflows",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "workflow-list", "type": "component", "description": "Lists workflows." },
+      { "id": "workflow-editor", "type": "component", "description": "Visual workflow editor." }
+    ],
+    "state": {
+      "workflows": "WorkflowDefinition[]",
+      "activeWorkflowId": "Uuid | null"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-workflows",
+        "method": "GET",
+        "path": "/api/workflows",
+        "responseType": "WorkflowDefinition[]"
+      },
+      {
+        "id": "run-workflow",
+        "method": "POST",
+        "path": "/api/workflows/run",
+        "payloadType": "{ workflowId: Uuid, input?: any }",
+        "responseType": "any"
+      }
+    ],
+    "services": [
+      {
+        "id": "workflows-service",
+        "methods": [
+          { "id": "getAllWorkflows", "returns": "WorkflowDefinition[]" },
+          { "id": "runWorkflow", "returns": "any" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "workflows",
+        "description": "Stores workflow definitions.",
+        "schema": "WorkflowDefinition[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "workflows-001",
+      "description": "Workflow steps must form a valid directed graph with no cycles.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

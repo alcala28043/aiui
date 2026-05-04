@@ -1,0 +1,103 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "22-tools-module",
+  "version": "1.0.0",
+  "title": "Tools Module",
+  "description": "Defines executable tools that agents and workflows can use.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types"],
+
+  "types": {
+    "ToolType": {
+      "description": "Type of tool.",
+      "kind": "enum",
+      "values": ["http", "shell", "custom"]
+    },
+    "ToolDefinition": {
+      "description": "Full tool definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "type": { "type": "ToolType" },
+        "inputSchema": { "type": "any" },
+        "outputSchema": { "type": "any" },
+        "command": { "type": "string", "optional": true },
+        "endpoint": { "type": "string", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "tools",
+        "path": "/tools",
+        "title": "Tools",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "tool-list", "type": "component", "description": "Lists tools." }
+    ],
+    "state": {
+      "tools": "ToolDefinition[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-tools",
+        "method": "GET",
+        "path": "/api/tools",
+        "responseType": "ToolDefinition[]"
+      },
+      {
+        "id": "run-tool",
+        "method": "POST",
+        "path": "/api/tools/run",
+        "payloadType": "{ toolId: Uuid, input: any }",
+        "responseType": "any"
+      }
+    ],
+    "services": [
+      {
+        "id": "tools-service",
+        "methods": [
+          { "id": "getAllTools", "returns": "ToolDefinition[]" },
+          { "id": "runTool", "returns": "any" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["process-spawn", "fs-read"],
+    "native": []
+  },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "tools",
+        "description": "Stores tool definitions.",
+        "schema": "ToolDefinition[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "tools-001",
+      "description": "Tools must declare input and output schemas.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

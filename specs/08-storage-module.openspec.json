@@ -1,0 +1,56 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "08-storage-module",
+  "version": "1.0.0",
+  "title": "Storage Module",
+  "description": "Defines the storage API and collection schemas. v0.1 uses mock/in-memory/JSON persistence.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture"],
+
+  "types": {
+    "StorageCollection": {
+      "description": "A storage collection definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "string" },
+        "schema": { "type": "any" },
+        "description": { "type": "string" }
+      }
+    }
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+
+  "backend": {
+    "routes": [],
+    "services": [
+      {
+        "id": "storage-service",
+        "methods": [
+          { "id": "get", "returns": "any" },
+          { "id": "set", "returns": "boolean" },
+          { "id": "delete", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": ["fs-read", "fs-write"], "native": [] },
+
+  "storage": {
+    "collections": [
+      { "id": "settings", "schema": "Record<string, any>", "description": "User settings." },
+      { "id": "profiles", "schema": "Record<string, any>", "description": "User profiles." },
+      { "id": "workspaces", "schema": "Record<string, any>", "description": "Workspaces." }
+    ]
+  },
+
+  "rules": [
+    { "id": "storage-001", "description": "v0.1 must not use a real database.", "scope": "backend" },
+    { "id": "storage-002", "description": "All collections must be declared in SPECs.", "scope": "global" }
+  ],
+
+  "todos": []
+}

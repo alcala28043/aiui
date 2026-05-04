@@ -1,0 +1,76 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "09-system-diagnostics",
+  "version": "1.0.0",
+  "title": "System Diagnostics",
+  "description": "Defines health checks, logs, environment info, and diagnostic tools.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "02-backend-foundation"],
+
+  "types": {
+    "HealthStatus": {
+      "description": "Backend health information.",
+      "kind": "object",
+      "fields": {
+        "status": { "type": "string" },
+        "timestamp": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "diagnostics",
+        "path": "/diagnostics",
+        "title": "Diagnostics",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "diagnostics-page", "type": "page", "description": "System diagnostics overview." }
+    ],
+    "state": {},
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "diagnostics-health",
+        "method": "GET",
+        "path": "/api/diagnostics/health",
+        "responseType": "HealthStatus"
+      }
+    ],
+    "services": [
+      {
+        "id": "diagnostics-service",
+        "methods": [
+          { "id": "getHealth", "returns": "HealthStatus" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["fs-read"],
+    "native": [
+      {
+        "id": "open-log-folder",
+        "description": "Opens the log folder.",
+        "returns": "void"
+      }
+    ]
+  },
+
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "diag-001", "description": "Diagnostics must not expose sensitive data.", "scope": "backend" }
+  ],
+
+  "todos": []
+}

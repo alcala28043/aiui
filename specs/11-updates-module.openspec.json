@@ -1,0 +1,92 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "11-updates-module",
+  "version": "1.0.0",
+  "title": "Updates Module",
+  "description": "Defines how aiui checks, downloads, and applies application updates.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "03-desktop-runtime"],
+
+  "types": {
+    "UpdateChannel": {
+      "description": "Release channel for updates.",
+      "kind": "enum",
+      "values": ["stable", "beta", "nightly"]
+    },
+    "UpdateInfo": {
+      "description": "Information about an available update.",
+      "kind": "object",
+      "fields": {
+        "version": { "type": "string" },
+        "channel": { "type": "UpdateChannel" },
+        "releaseNotesUrl": { "type": "string", "optional": true },
+        "mandatory": { "type": "boolean" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [
+      {
+        "id": "update-banner",
+        "type": "component",
+        "description": "Shows when a new version is available."
+      }
+    ],
+    "state": {
+      "updateInfo": "UpdateInfo | null"
+    },
+    "events": [
+      {
+        "id": "update-available",
+        "description": "Triggered when a new update is detected.",
+        "payload": "UpdateInfo"
+      }
+    ]
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "check-updates",
+        "method": "GET",
+        "path": "/api/updates/check",
+        "responseType": "UpdateInfo | null"
+      }
+    ],
+    "services": [
+      {
+        "id": "updates-service",
+        "methods": [
+          { "id": "checkForUpdates", "returns": "UpdateInfo | null" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": [],
+    "native": [
+      {
+        "id": "apply-update",
+        "description": "Applies a downloaded update and restarts the app.",
+        "returns": "void"
+      }
+    ]
+  },
+
+  "storage": { "collections": [] },
+
+  "rules": [
+    {
+      "id": "updates-001",
+      "description": "Update checks must be explicit, not silent auto‑updates.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

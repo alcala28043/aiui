@@ -1,0 +1,106 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "06-settings-module",
+  "version": "1.0.0",
+  "title": "Settings Module",
+  "description": "Defines global and module-specific settings for aiui, including UI preferences, runtime configuration, and feature toggles.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types"],
+
+  "types": {
+    "SettingEntry": {
+      "description": "A single configurable setting.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string" },
+        "defaultValue": { "type": "any" },
+        "value": { "type": "any" }
+      }
+    },
+    "SettingsGroup": {
+      "description": "A group of related settings.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "entries": { "type": "SettingEntry[]"}
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "settings-main",
+        "path": "/settings",
+        "title": "Settings",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "settings-page", "type": "page", "description": "Main settings page." },
+      { "id": "settings-group", "type": "component", "description": "Displays a group of settings." }
+    ],
+    "state": {
+      "settings": "Record<string, any>"
+    },
+    "events": [
+      {
+        "id": "settings-updated",
+        "description": "Triggered when a setting is updated.",
+        "payload": { "id": "string", "value": "any" }
+      }
+    ]
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-settings",
+        "method": "GET",
+        "path": "/api/settings",
+        "responseType": "SettingsGroup[]"
+      },
+      {
+        "id": "update-setting",
+        "method": "POST",
+        "path": "/api/settings/update",
+        "payloadType": "{ id: string, value: any }",
+        "responseType": "boolean"
+      }
+    ],
+    "services": [
+      {
+        "id": "settings-service",
+        "methods": [
+          { "id": "getAllSettings", "returns": "SettingsGroup[]" },
+          { "id": "updateSetting", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "settings",
+        "description": "Stores user settings.",
+        "schema": "Record<string, any>"
+      }
+    ]
+  },
+
+  "rules": [
+    { "id": "settings-001", "description": "All settings must be typed and defined in SPECs.", "scope": "global" },
+    { "id": "settings-002", "description": "Settings must be persisted locally using the Storage module.", "scope": "backend" }
+  ],
+
+  "todos": []
+}

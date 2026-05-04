@@ -1,0 +1,91 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "22b-ides-module",
+  "version": "1.0.0",
+  "title": "IDEs Module",
+  "description": "Defines IDE integrations (VSCode, JetBrains, etc.) and how aiui interacts with them.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "19-lsps-module"],
+
+  "types": {
+    "IdeType": {
+      "description": "Supported IDEs.",
+      "kind": "enum",
+      "values": ["vscode", "jetbrains", "cursor", "zed"]
+    },
+    "IdeIntegration": {
+      "description": "IDE integration definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "type": { "type": "IdeType" },
+        "enabled": { "type": "boolean" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "ides",
+        "path": "/ides",
+        "title": "IDEs",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "ide-list", "type": "component", "description": "Lists IDE integrations." }
+    ],
+    "state": {
+      "ides": "IdeIntegration[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-ides",
+        "method": "GET",
+        "path": "/api/ides",
+        "responseType": "IdeIntegration[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "ides-service",
+        "methods": [
+          { "id": "getAllIdes", "returns": "IdeIntegration[]" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["fs-read", "process-spawn"],
+    "native": []
+  },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "ides",
+        "description": "Stores IDE integration settings.",
+        "schema": "IdeIntegration[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "ides-001",
+      "description": "IDE integrations must not modify user files without explicit confirmation.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

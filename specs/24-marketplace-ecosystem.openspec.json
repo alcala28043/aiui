@@ -1,0 +1,93 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "24-marketplace-ecosystem",
+  "version": "1.0.0",
+  "title": "Marketplace Ecosystem",
+  "description": "Defines the marketplace for discovering, installing, rating, and updating plugins, models, agents, workflows, and tools.",
+  "status": "draft",
+
+  "dependencies": [
+    "00-core-architecture",
+    "23-plugins-system"
+  ],
+
+  "types": {
+    "MarketplaceItemType": {
+      "description": "Type of marketplace item.",
+      "kind": "enum",
+      "values": ["plugin", "model", "agent", "workflow", "tool", "skill"]
+    },
+    "MarketplaceItem": {
+      "description": "An item available in the marketplace.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "type": { "type": "MarketplaceItemType" },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "author": { "type": "string" },
+        "description": { "type": "string" },
+        "rating": { "type": "number" },
+        "downloadUrl": { "type": "string" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "marketplace",
+        "path": "/marketplace",
+        "title": "Marketplace",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "marketplace-list", "type": "component", "description": "Lists marketplace items." },
+      { "id": "marketplace-details", "type": "component", "description": "Shows item details." }
+    ],
+    "state": {
+      "items": "MarketplaceItem[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-marketplace-items",
+        "method": "GET",
+        "path": "/api/marketplace",
+        "responseType": "MarketplaceItem[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "marketplace-service",
+        "methods": [
+          { "id": "fetchItems", "returns": "MarketplaceItem[]" },
+          { "id": "installItem", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["fs-write", "process-spawn"],
+    "native": []
+  },
+
+  "storage": { "collections": [] },
+
+  "rules": [
+    {
+      "id": "marketplace-001",
+      "description": "Marketplace items must be verified before installation.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

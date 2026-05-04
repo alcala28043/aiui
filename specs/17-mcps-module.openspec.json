@@ -1,0 +1,90 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "17-mcps-module",
+  "version": "1.0.0",
+  "title": "MCPs Module",
+  "description": "Defines MCP (Model Context Protocol) servers, their lifecycle, capabilities, and integration.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types", "08-storage-module"],
+
+  "types": {
+    "McpServer": {
+      "description": "Definition of an MCP server.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "command": { "type": "string" },
+        "args": { "type": "string[]", "optional": true },
+        "workingDirectory": { "type": "string", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "mcps",
+        "path": "/mcps",
+        "title": "MCP Servers",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "mcp-list", "type": "component", "description": "Lists MCP servers." }
+    ],
+    "state": {
+      "mcps": "McpServer[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-mcps",
+        "method": "GET",
+        "path": "/api/mcps",
+        "responseType": "McpServer[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "mcp-service",
+        "methods": [
+          { "id": "getAllMcps", "returns": "McpServer[]" },
+          { "id": "startMcp", "returns": "boolean" },
+          { "id": "stopMcp", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["process-spawn"],
+    "native": []
+  },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "mcps",
+        "description": "Stores MCP server definitions.",
+        "schema": "McpServer[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "mcps-001",
+      "description": "MCP servers must run sandboxed when possible.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

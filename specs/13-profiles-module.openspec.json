@@ -1,0 +1,95 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "13-profiles-module",
+  "version": "1.0.0",
+  "title": "Profiles Module",
+  "description": "Defines user profiles, their preferences, and isolation rules.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types", "08-storage-module"],
+
+  "types": {
+    "UserProfile": {
+      "description": "Full user profile.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "avatarColor": { "type": "string", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [
+      {
+        "id": "profile-switcher",
+        "type": "component",
+        "description": "Allows switching between profiles."
+      }
+    ],
+    "state": {
+      "activeProfileId": "Uuid | null",
+      "profiles": "UserProfile[]"
+    },
+    "events": [
+      {
+        "id": "profile-changed",
+        "description": "Triggered when the active profile changes.",
+        "payload": { "profileId": "Uuid" }
+      }
+    ]
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-profiles",
+        "method": "GET",
+        "path": "/api/profiles",
+        "responseType": "UserProfile[]"
+      },
+      {
+        "id": "create-profile",
+        "method": "POST",
+        "path": "/api/profiles",
+        "payloadType": "{ name: string }",
+        "responseType": "UserProfile"
+      }
+    ],
+    "services": [
+      {
+        "id": "profiles-service",
+        "methods": [
+          { "id": "getAllProfiles", "returns": "UserProfile[]" },
+          { "id": "createProfile", "returns": "UserProfile" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "profiles",
+        "description": "Stores user profiles.",
+        "schema": "UserProfile[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "profiles-001",
+      "description": "Each profile must have isolated settings and workspaces.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

@@ -1,0 +1,71 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "12-telemetry-module",
+  "version": "1.0.0",
+  "title": "Telemetry Module",
+  "description": "Defines local telemetry events and optional export, with strict privacy and opt‑in rules.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "06-settings-module"],
+
+  "types": {
+    "TelemetryEvent": {
+      "description": "A single telemetry event.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "type": { "type": "string" },
+        "timestamp": { "type": "Timestamp" },
+        "payload": { "type": "any" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [],
+    "state": {},
+    "events": []
+  },
+
+  "backend": {
+    "routes": [],
+    "services": [
+      {
+        "id": "telemetry-service",
+        "methods": [
+          { "id": "recordEvent", "returns": "void" },
+          { "id": "exportEvents", "returns": "TelemetryEvent[]" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "telemetry-events",
+        "description": "Locally stored telemetry events.",
+        "schema": "TelemetryEvent[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "telemetry-001",
+      "description": "Telemetry must be opt‑in and clearly explained to the user.",
+      "scope": "global"
+    },
+    {
+      "id": "telemetry-002",
+      "description": "Telemetry must never include raw user content.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

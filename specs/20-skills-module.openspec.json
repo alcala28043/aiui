@@ -1,0 +1,85 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "20-skills-module",
+  "version": "1.0.0",
+  "title": "Skills Module",
+  "description": "Defines reusable skills that agents can use, including metadata and execution rules.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types"],
+
+  "types": {
+    "Skill": {
+      "description": "A reusable agent skill.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "inputSchema": { "type": "any" },
+        "outputSchema": { "type": "any" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "skills",
+        "path": "/skills",
+        "title": "Skills",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "skill-list", "type": "component", "description": "Lists skills." }
+    ],
+    "state": {
+      "skills": "Skill[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-skills",
+        "method": "GET",
+        "path": "/api/skills",
+        "responseType": "Skill[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "skills-service",
+        "methods": [
+          { "id": "getAllSkills", "returns": "Skill[]" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "skills",
+        "description": "Stores agent skills.",
+        "schema": "Skill[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "skills-001",
+      "description": "Skills must be reusable across agents.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

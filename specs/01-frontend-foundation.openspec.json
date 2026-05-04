@@ -1,0 +1,80 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "01-frontend-foundation",
+  "version": "1.0.0",
+  "title": "Frontend Foundation",
+  "description": "Defines the base structure, routing, components, and state model for the Angular frontend.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "05-ux-design-system", "04-shared-types"],
+
+  "types": {
+    "RouteId": { "description": "Frontend route identifier.", "kind": "string" },
+    "FeatureFlag": {
+      "description": "Feature flag for enabling/disabling UI features.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "string" },
+        "enabled": { "type": "boolean" },
+        "description": { "type": "string" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "route-dashboard",
+        "path": "/",
+        "title": "Dashboard",
+        "layout": "main-shell",
+        "requiresAuth": false
+      },
+      {
+        "id": "route-settings",
+        "path": "/settings",
+        "title": "Settings",
+        "layout": "main-shell",
+        "requiresAuth": false
+      }
+    ],
+    "components": [
+      { "id": "app-shell", "type": "layout", "description": "Main application shell." },
+      { "id": "app-sidebar", "type": "navigation", "description": "Sidebar navigation." },
+      { "id": "app-topbar", "type": "navigation", "description": "Top bar with context and actions." }
+    ],
+    "state": {
+      "global": {
+        "theme": "light | dark | system",
+        "activeWorkspaceId": "string | null",
+        "activeProjectId": "string | null",
+        "activeProfileId": "string | null"
+      }
+    },
+    "events": [
+      {
+        "id": "frontend-theme-changed",
+        "description": "Triggered when the user changes the theme.",
+        "payload": { "theme": "string" }
+      }
+    ]
+  },
+
+  "backend": { "routes": [], "services": [], "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "fe-001", "description": "All components must be Angular standalone components.", "scope": "frontend" },
+    { "id": "fe-002", "description": "Global state must use Signals and/or RxJS.", "scope": "frontend" },
+    { "id": "fe-003", "description": "Routes must be defined in SPECs, not directly in code.", "scope": "frontend" }
+  ],
+
+  "todos": [
+    {
+      "id": "fe-todo-001",
+      "description": "Define domain-based Angular modules (settings, models, agents, etc.).",
+      "priority": "high"
+    }
+  ]
+}

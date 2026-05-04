@@ -1,0 +1,58 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "05-ux-design-system",
+  "version": "1.0.0",
+  "title": "UX Design System",
+  "description": "Defines the visual language, UX rules, themes, and interaction patterns for aiui.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture"],
+
+  "types": {
+    "Theme": {
+      "description": "Application theme.",
+      "kind": "enum",
+      "values": ["light", "dark", "system"]
+    },
+    "Severity": {
+      "description": "Severity level for notifications.",
+      "kind": "enum",
+      "values": ["info", "success", "warning", "error"]
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [],
+    "state": { "theme": "Theme" },
+    "events": [
+      {
+        "id": "ux-toast-shown",
+        "description": "Triggered when a toast notification is shown.",
+        "payload": {
+          "message": "string",
+          "severity": "Severity",
+          "durationMs": "number"
+        }
+      }
+    ]
+  },
+
+  "backend": { "routes": [], "services": [], "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "ux-001", "description": "All screens must follow spacing, typography, and color tokens.", "scope": "frontend" },
+    { "id": "ux-002", "description": "Errors must be visible to the user, not only logged.", "scope": "frontend" },
+    { "id": "ux-003", "description": "The app must be keyboard-accessible.", "scope": "frontend" }
+  ],
+
+  "todos": [
+    {
+      "id": "ux-todo-001",
+      "description": "Define design tokens (spacing, radius, typography).",
+      "priority": "medium"
+    }
+  ]
+}

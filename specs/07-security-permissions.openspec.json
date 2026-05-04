@@ -1,0 +1,49 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "07-security-permissions",
+  "version": "1.0.0",
+  "title": "Security & Permissions",
+  "description": "Defines security rules, permission scopes, and access control for aiui.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture"],
+
+  "types": {
+    "Permission": {
+      "description": "A single permission entry.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "string" },
+        "description": { "type": "string" },
+        "scope": { "type": "string" }
+      }
+    }
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+
+  "backend": {
+    "routes": [],
+    "services": [],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": [
+      { "id": "fs-read", "description": "Read local files.", "scope": "restricted" },
+      { "id": "fs-write", "description": "Write local files.", "scope": "restricted" },
+      { "id": "process-spawn", "description": "Spawn external processes.", "scope": "restricted" }
+    ],
+    "native": []
+  },
+
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "sec-001", "description": "All permissions must be explicitly declared in SPECs.", "scope": "global" },
+    { "id": "sec-002", "description": "No module may request permissions not listed in this SPEC.", "scope": "runtime" },
+    { "id": "sec-003", "description": "External processes must run sandboxed when possible.", "scope": "runtime" }
+  ],
+
+  "todos": []
+}

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "02-backend-foundation",
+  "version": "1.0.0",
+  "title": "Backend Foundation",
+  "description": "Defines the local backend architecture, API conventions, and service structure.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types"],
+
+  "types": {
+    "ApiError": {
+      "description": "Standard API error format.",
+      "kind": "object",
+      "fields": {
+        "code": { "type": "string" },
+        "message": { "type": "string" },
+        "details": { "type": "object", "optional": true }
+      }
+    },
+    "ApiResponse": {
+      "description": "Standard API response wrapper.",
+      "kind": "generic",
+      "parameters": ["T"],
+      "template": {
+        "success": { "type": "boolean" },
+        "data": { "type": "T", "optional": true },
+        "error": { "type": "ApiError", "optional": true }
+      }
+    }
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "health-check",
+        "method": "GET",
+        "path": "/api/health",
+        "description": "Returns basic backend health information.",
+        "responseType": "HealthStatus"
+      }
+    ],
+    "services": [
+      {
+        "id": "health-service",
+        "description": "Provides backend health information.",
+        "methods": [
+          { "id": "getHealthStatus", "returns": "HealthStatus" }
+        ]
+      }
+    ],
+    "events": [
+      {
+        "id": "backend-started",
+        "description": "Emitted when the backend has started.",
+        "payload": { "timestamp": "string" }
+      }
+    ]
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "be-001", "description": "All routes must return ApiResponse<T>.", "scope": "backend" },
+    { "id": "be-002", "description": "v0.1 uses no real database; only mock/in-memory/JSON.", "scope": "backend" },
+    { "id": "be-003", "description": "Services must be domain-based.", "scope": "backend" }
+  ],
+
+  "todos": [
+    {
+      "id": "be-todo-001",
+      "description": "Define logging and error-handling middleware.",
+      "priority": "high"
+    }
+  ]
+}

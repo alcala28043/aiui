@@ -1,0 +1,107 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "23-plugins-system",
+  "version": "1.0.0",
+  "title": "Plugins System",
+  "description": "Defines the plugin architecture, lifecycle, permissions, and extension points for aiui.",
+  "status": "draft",
+
+  "dependencies": [
+    "00-core-architecture",
+    "04-shared-types",
+    "16-models-module",
+    "18-agents-module",
+    "20-skills-module",
+    "22-tools-module"
+  ],
+
+  "types": {
+    "PluginType": {
+      "description": "Type of plugin.",
+      "kind": "enum",
+      "values": ["model", "agent", "tool", "skill", "workflow", "ui"]
+    },
+    "PluginManifest": {
+      "description": "Plugin metadata and capabilities.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "version": { "type": "string" },
+        "type": { "type": "PluginType" },
+        "entrypoint": { "type": "string" },
+        "permissions": { "type": "string[]" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "plugins",
+        "path": "/plugins",
+        "title": "Plugins",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "plugin-list", "type": "component", "description": "Lists installed plugins." }
+    ],
+    "state": {
+      "plugins": "PluginManifest[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-plugins",
+        "method": "GET",
+        "path": "/api/plugins",
+        "responseType": "PluginManifest[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "plugins-service",
+        "methods": [
+          { "id": "loadPlugin", "returns": "boolean" },
+          { "id": "unloadPlugin", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["fs-read", "fs-write", "process-spawn"],
+    "native": []
+  },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "plugins",
+        "description": "Stores installed plugin manifests.",
+        "schema": "PluginManifest[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "plugins-001",
+      "description": "Plugins must declare all permissions explicitly in their manifest.",
+      "scope": "global"
+    },
+    {
+      "id": "plugins-002",
+      "description": "Plugins must run sandboxed when possible.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

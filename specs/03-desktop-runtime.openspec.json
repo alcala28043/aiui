@@ -1,0 +1,47 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "03-desktop-runtime",
+  "version": "1.0.0",
+  "title": "Desktop Runtime",
+  "description": "Defines the Tauri runtime, permissions, native capabilities, and startup behavior.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "02-backend-foundation"],
+
+  "types": {
+    "WindowId": { "description": "Tauri window identifier.", "kind": "string" }
+  },
+
+  "tauri": {
+    "permissions": [
+      { "id": "fs-read", "description": "Allows reading local files.", "scope": "restricted" },
+      { "id": "fs-write", "description": "Allows writing local files.", "scope": "restricted" },
+      { "id": "process-spawn", "description": "Allows spawning external processes.", "scope": "restricted" }
+    ],
+    "native": [
+      {
+        "id": "native-open-log-folder",
+        "description": "Opens the log folder in the system file explorer.",
+        "returns": "void"
+      }
+    ]
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+  "backend": { "routes": [], "services": [], "events": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "rt-001", "description": "Backend must start before showing the main UI.", "scope": "runtime" },
+    { "id": "rt-002", "description": "All Tauri permissions must be declared in SPECs.", "scope": "runtime" },
+    { "id": "rt-003", "description": "The app must run fully offline.", "scope": "runtime" }
+  ],
+
+  "todos": [
+    {
+      "id": "rt-todo-001",
+      "description": "Define multi-window strategy for future versions.",
+      "priority": "low"
+    }
+  ]
+}

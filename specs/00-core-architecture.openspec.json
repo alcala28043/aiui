@@ -1,0 +1,64 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "00-core-architecture",
+  "version": "1.0.0",
+  "title": "Core Architecture",
+  "description": "Defines the global architecture, module boundaries, system layers, and fundamental rules for aiui.",
+  "status": "draft",
+
+  "dependencies": [],
+
+  "types": {
+    "Environment": {
+      "description": "Execution environment for aiui.",
+      "kind": "enum",
+      "values": ["development", "staging", "production"]
+    },
+    "Platform": {
+      "description": "Desktop platform where aiui runs.",
+      "kind": "enum",
+      "values": ["windows", "macos", "linux"]
+    },
+    "ModuleId": {
+      "description": "Unique identifier for a module.",
+      "kind": "string",
+      "pattern": "^[0-9]{2}[a-z0-9-]+$"
+    }
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+  "backend": { "routes": [], "services": [], "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    {
+      "id": "core-001",
+      "description": "All functionality must belong to a module defined in a SPEC.",
+      "scope": "global"
+    },
+    {
+      "id": "core-002",
+      "description": "A module cannot depend on another module unless explicitly listed in `dependencies`.",
+      "scope": "global"
+    },
+    {
+      "id": "core-003",
+      "description": "System layers follow: core → infrastructure → functional → ecosystem → distribution.",
+      "scope": "global"
+    },
+    {
+      "id": "core-004",
+      "description": "aiui must run fully offline with no mandatory external services.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": [
+    {
+      "id": "core-todo-001",
+      "description": "Create an automated SPEC validator for CI.",
+      "priority": "high"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "19-lsps-module",
+  "version": "1.0.0",
+  "title": "LSPs Module",
+  "description": "Defines Language Server Protocol integrations for code intelligence.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "08-storage-module"],
+
+  "types": {
+    "LspServer": {
+      "description": "Definition of an LSP server.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "language": { "type": "string" },
+        "command": { "type": "string" },
+        "args": { "type": "string[]", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [],
+    "state": {
+      "lsps": "LspServer[]"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-lsps",
+        "method": "GET",
+        "path": "/api/lsps",
+        "responseType": "LspServer[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "lsp-service",
+        "methods": [
+          { "id": "getAllLsps", "returns": "LspServer[]" },
+          { "id": "startLsp", "returns": "boolean" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": ["process-spawn"],
+    "native": []
+  },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "lsps",
+        "description": "Stores LSP server definitions.",
+        "schema": "LspServer[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "lsps-001",
+      "description": "LSP servers must be isolated per workspace.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

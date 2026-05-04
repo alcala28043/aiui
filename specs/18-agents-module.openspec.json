@@ -1,0 +1,101 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "18-agents-module",
+  "version": "1.0.0",
+  "title": "Agents Module",
+  "description": "Defines AI agents, their configuration, memory, tools, and execution model.",
+  "status": "draft",
+
+  "dependencies": [
+    "00-core-architecture",
+    "04-shared-types",
+    "16-models-module",
+    "20-skills-module",
+    "22-tools-module"
+  ],
+
+  "types": {
+    "AgentRole": {
+      "description": "Role of the agent.",
+      "kind": "enum",
+      "values": ["assistant", "planner", "executor", "critic"]
+    },
+    "AgentDefinition": {
+      "description": "Full agent definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "role": { "type": "AgentRole" },
+        "modelId": { "type": "Uuid" },
+        "skills": { "type": "Uuid[]" },
+        "tools": { "type": "Uuid[]" },
+        "memoryEnabled": { "type": "boolean" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "agents",
+        "path": "/agents",
+        "title": "Agents",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "agent-list", "type": "component", "description": "Lists agents." },
+      { "id": "agent-editor", "type": "component", "description": "Edits agent configuration." }
+    ],
+    "state": {
+      "agents": "AgentDefinition[]",
+      "activeAgentId": "Uuid | null"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-agents",
+        "method": "GET",
+        "path": "/api/agents",
+        "responseType": "AgentDefinition[]"
+      }
+    ],
+    "services": [
+      {
+        "id": "agents-service",
+        "methods": [
+          { "id": "getAllAgents", "returns": "AgentDefinition[]" },
+          { "id": "runAgent", "returns": "string" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "agents",
+        "description": "Stores agent definitions.",
+        "schema": "AgentDefinition[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "agents-001",
+      "description": "Agents must always reference a valid model.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

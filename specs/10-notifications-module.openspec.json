@@ -1,0 +1,50 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "10-notifications-module",
+  "version": "1.0.0",
+  "title": "Notifications Module",
+  "description": "Defines toast notifications, system alerts, and UX messaging.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "05-ux-design-system"],
+
+  "types": {
+    "Notification": {
+      "description": "A UI notification.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "message": { "type": "string" },
+        "severity": { "type": "Severity" },
+        "durationMs": { "type": "number" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [
+      { "id": "toast-container", "type": "component", "description": "Displays toast notifications." }
+    ],
+    "state": {
+      "notifications": "Notification[]"
+    },
+    "events": [
+      {
+        "id": "notification-added",
+        "description": "Triggered when a notification is added.",
+        "payload": "Notification"
+      }
+    ]
+  },
+
+  "backend": { "routes": [], "services": [], "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    { "id": "notif-001", "description": "Notifications must follow UX severity rules.", "scope": "frontend" }
+  ],
+
+  "todos": []
+}

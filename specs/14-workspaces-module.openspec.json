@@ -1,0 +1,95 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "14-workspaces-module",
+  "version": "1.0.0",
+  "title": "Workspaces Module",
+  "description": "Defines workspaces as logical containers for projects, models, and agents.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types", "13-profiles-module", "08-storage-module"],
+
+  "types": {
+    "Workspace": {
+      "description": "A workspace owned by a profile.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "profileId": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [
+      {
+        "id": "workspace-switcher",
+        "type": "component",
+        "description": "Allows switching between workspaces."
+      }
+    ],
+    "state": {
+      "activeWorkspaceId": "Uuid | null",
+      "workspaces": "Workspace[]"
+    },
+    "events": [
+      {
+        "id": "workspace-changed",
+        "description": "Triggered when the active workspace changes.",
+        "payload": { "workspaceId": "Uuid" }
+      }
+    ]
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-workspaces",
+        "method": "GET",
+        "path": "/api/workspaces",
+        "responseType": "Workspace[]"
+      },
+      {
+        "id": "create-workspace",
+        "method": "POST",
+        "path": "/api/workspaces",
+        "payloadType": "{ name: string }",
+        "responseType": "Workspace"
+      }
+    ],
+    "services": [
+      {
+        "id": "workspaces-service",
+        "methods": [
+          { "id": "getAllWorkspaces", "returns": "Workspace[]" },
+          { "id": "createWorkspace", "returns": "Workspace" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "workspaces",
+        "description": "Stores workspaces per profile.",
+        "schema": "Workspace[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "workspaces-001",
+      "description": "Workspaces must always be scoped to a profile.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

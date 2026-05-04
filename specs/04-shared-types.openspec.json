@@ -1,0 +1,60 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "04-shared-types",
+  "version": "1.0.0",
+  "title": "Shared Types",
+  "description": "Defines all shared types used across frontend, backend, and Tauri.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture"],
+
+  "types": {
+    "Uuid": {
+      "description": "Universal unique identifier.",
+      "kind": "string",
+      "pattern": "^[0-9a-fA-F-]{36}$"
+    },
+    "Timestamp": {
+      "description": "ISO 8601 timestamp.",
+      "kind": "string"
+    },
+    "UserProfileSummary": {
+      "description": "Summary of a user profile.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "avatarColor": { "type": "string", "optional": true }
+      }
+    },
+    "WorkspaceSummary": {
+      "description": "Summary of a workspace.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" }
+      }
+    }
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+  "backend": { "routes": [], "services": [], "events": [] },
+  "tauri": { "permissions": [], "native": [] },
+  "storage": { "collections": [] },
+
+  "rules": [
+    {
+      "id": "st-001",
+      "description": "All shared types must be defined here and exported to `/app/shared`.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": [
+    {
+      "id": "st-todo-001",
+      "description": "Add shared types for models, agents, workflows, and tools.",
+      "priority": "medium"
+    }
+  ]
+}

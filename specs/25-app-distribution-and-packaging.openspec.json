@@ -1,0 +1,66 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "25-app-distribution-and-packaging",
+  "version": "1.0.0",
+  "title": "App Distribution & Packaging",
+  "description": "Defines how aiui is packaged, signed, updated, and distributed across platforms.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "03-desktop-runtime", "11-updates-module"],
+
+  "types": {
+    "DistributionTarget": {
+      "description": "Supported distribution platforms.",
+      "kind": "enum",
+      "values": ["windows", "macos", "linux"]
+    },
+    "PackageFormat": {
+      "description": "Packaging formats per platform.",
+      "kind": "enum",
+      "values": ["msi", "exe", "dmg", "app", "deb", "rpm", "AppImage"]
+    }
+  },
+
+  "frontend": { "routes": [], "components": [], "state": {}, "events": [] },
+
+  "backend": {
+    "routes": [],
+    "services": [
+      {
+        "id": "distribution-service",
+        "methods": [
+          { "id": "getCurrentVersion", "returns": "string" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": {
+    "permissions": [],
+    "native": [
+      {
+        "id": "sign-binary",
+        "description": "Signs the application binary for distribution.",
+        "returns": "boolean"
+      }
+    ]
+  },
+
+  "storage": { "collections": [] },
+
+  "rules": [
+    {
+      "id": "dist-001",
+      "description": "Each platform must have a dedicated packaging configuration.",
+      "scope": "global"
+    },
+    {
+      "id": "dist-002",
+      "description": "All distributed binaries must be signed.",
+      "scope": "runtime"
+    }
+  ],
+
+  "todos": []
+}

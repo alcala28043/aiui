@@ -1,0 +1,108 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "16-models-module",
+  "version": "1.0.0",
+  "title": "Models Module",
+  "description": "Defines AI models (local and API), their metadata, capabilities, and runtime configuration.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types", "08-storage-module"],
+
+  "types": {
+    "ModelSource": {
+      "description": "Where the model runs.",
+      "kind": "enum",
+      "values": ["local", "api"]
+    },
+    "ModelCapability": {
+      "description": "Capabilities supported by a model.",
+      "kind": "enum",
+      "values": ["text", "vision", "audio", "embedding", "tool_use"]
+    },
+    "ModelDefinition": {
+      "description": "Full model definition.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "provider": { "type": "string" },
+        "source": { "type": "ModelSource" },
+        "capabilities": { "type": "ModelCapability[]" },
+        "contextLength": { "type": "number" },
+        "endpoint": { "type": "string", "optional": true },
+        "localModelPath": { "type": "string", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [
+      {
+        "id": "models",
+        "path": "/models",
+        "title": "Models",
+        "layout": "main-shell"
+      }
+    ],
+    "components": [
+      { "id": "model-list", "type": "component", "description": "Lists all models." },
+      { "id": "model-details", "type": "component", "description": "Shows model metadata." }
+    ],
+    "state": {
+      "models": "ModelDefinition[]",
+      "activeModelId": "Uuid | null"
+    },
+    "events": []
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-models",
+        "method": "GET",
+        "path": "/api/models",
+        "responseType": "ModelDefinition[]"
+      },
+      {
+        "id": "register-model",
+        "method": "POST",
+        "path": "/api/models",
+        "payloadType": "ModelDefinition",
+        "responseType": "ModelDefinition"
+      }
+    ],
+    "services": [
+      {
+        "id": "models-service",
+        "methods": [
+          { "id": "getAllModels", "returns": "ModelDefinition[]" },
+          { "id": "registerModel", "returns": "ModelDefinition" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": ["fs-read"], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "models",
+        "description": "Stores registered models.",
+        "schema": "ModelDefinition[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "models-001",
+      "description": "Models must declare capabilities explicitly.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}

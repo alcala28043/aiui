@@ -1,0 +1,96 @@
+{
+  "$schema": "https://openspec.aiui/schema.json",
+  "id": "15-projects-module",
+  "version": "1.0.0",
+  "title": "Projects Module",
+  "description": "Defines projects inside a workspace, used to group models, agents, workflows, and tools.",
+  "status": "draft",
+
+  "dependencies": ["00-core-architecture", "04-shared-types", "14-workspaces-module", "08-storage-module"],
+
+  "types": {
+    "Project": {
+      "description": "A project within a workspace.",
+      "kind": "object",
+      "fields": {
+        "id": { "type": "Uuid" },
+        "workspaceId": { "type": "Uuid" },
+        "name": { "type": "string" },
+        "description": { "type": "string", "optional": true },
+        "createdAt": { "type": "Timestamp" }
+      }
+    }
+  },
+
+  "frontend": {
+    "routes": [],
+    "components": [
+      {
+        "id": "project-list",
+        "type": "component",
+        "description": "Lists projects in the active workspace."
+      }
+    ],
+    "state": {
+      "activeProjectId": "Uuid | null",
+      "projects": "Project[]"
+    },
+    "events": [
+      {
+        "id": "project-changed",
+        "description": "Triggered when the active project changes.",
+        "payload": { "projectId": "Uuid" }
+      }
+    ]
+  },
+
+  "backend": {
+    "routes": [
+      {
+        "id": "get-projects",
+        "method": "GET",
+        "path": "/api/projects",
+        "responseType": "Project[]"
+      },
+      {
+        "id": "create-project",
+        "method": "POST",
+        "path": "/api/projects",
+        "payloadType": "{ name: string, description?: string }",
+        "responseType": "Project"
+      }
+    ],
+    "services": [
+      {
+        "id": "projects-service",
+        "methods": [
+          { "id": "getAllProjects", "returns": "Project[]" },
+          { "id": "createProject", "returns": "Project" }
+        ]
+      }
+    ],
+    "events": []
+  },
+
+  "tauri": { "permissions": [], "native": [] },
+
+  "storage": {
+    "collections": [
+      {
+        "id": "projects",
+        "description": "Stores projects per workspace.",
+        "schema": "Project[]"
+      }
+    ]
+  },
+
+  "rules": [
+    {
+      "id": "projects-001",
+      "description": "Projects must always belong to a workspace.",
+      "scope": "global"
+    }
+  ],
+
+  "todos": []
+}
